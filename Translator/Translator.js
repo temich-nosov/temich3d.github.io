@@ -1,0 +1,56 @@
+function Translator(lex_table, grammar_rules) {
+    this.lexer = new Lexer(lex_table);
+    this.parser = new Parser();
+
+    this.translate = function(prog_text) {
+        var translate_res = {}
+
+        // ========================================================
+        // Стадия 1. Лексический анализатор
+        var lexem_for_visualisation = [];
+        var lexer_res = this.lexer.lexer(prog_text, lexem_for_visualisation);
+        translate_res.lexer = lexer_res;
+        translate_res.lexem_for_visualisation = lexem_for_visualisation;
+
+        if (lexer_res.status == "Error") {
+            translate_res.status = "Error";
+            return translate_res;
+        }
+
+        // ========================================================
+        // Стадия 2. Синтаксический анализатор
+
+        // Пункт первый -- постоение синтаксического дерева
+        var lexems = lexer_res.result.lexems;
+        translate_res.parser = this.parser.make_tree(lexems);
+
+        if (translate_res.parser.status == "Error") {
+            translate_res.status = "Error";
+            return translate_res;
+        }
+
+        // Пункт второй -- проверка типов и правильности выражений
+        // TODO
+
+
+        // ========================================================
+        // Стадия 3. Генератор кода
+        // TODO
+
+
+        // ========================================================
+        // Трансляция прошла успешно, возвращаем результат
+        // для дальшейшей обработки
+        translate_res.status = "Ok";
+        return translate_res;
+    }
+
+    // Инициализация парсера
+    var init_result = this.parser.init(grammar_rules);
+    if (init_result.status == "Error") {
+        // Ошибка
+        console.log("Ошибка инициализации парсера!");
+        console.log(init_result);
+        return;
+    }
+}

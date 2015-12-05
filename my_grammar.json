@@ -1,0 +1,137 @@
+{
+    "start"     : "START",
+    "terms"     :
+    [
+        "ident", "int_const", "float_const", "func_lex", "if_lex", "else_lex",
+        "for_lex", "range_lex", "case_lex", "break_lex", "default_lex", "switch_lex",
+        "var_lex", "bool_lex", "int_lex", "float_lex", "string_lex", "return_lex",
+        "string_const", "and", "or", "greater_or_eq", "less_or_eq", "not_equal",
+        "is_equal", "assing", "plus_eq", "minus_eq", "div_eq", "mod_eq", "mul_eq",
+        "plus", "minus", "mult", "div", "mod", "equating", "greater", "less",
+        "not", "inc", "dec", "open_parentheses",
+        "close_parentheses",
+        "open_bracket",
+        "close_bracket",
+        "semicolon",
+        "colon",
+        "comma",
+        "point",
+        "open_brace",
+        "close_brace",
+        "print",
+        "scan",
+        "pow",
+        "main_lex"
+    ],
+    "noterms"   :
+    [
+        "START", "PROG", "MAIN_FUNCTION", "FUNCTIONS", "FUNCTION", "INPUT_PARAMS",
+        "OPERATORS", "TYPE", "INPUT_PARAM", "NOTVOID_INPUT_PARAMS", "OPERATORS",
+        "OPERATOR", "EXPR", "FUNCTION_CALL", "EQUATE", "CYCLES", "IF",
+        "OPERATORS_BLOCK", "VAR_DECL", "PARAMS", "PARAM", "NOTVOID_PARAMS",
+        "FOR", "WHILE", "FOR_IN", "FOR_INIT", "FOR_ITER", "IDENT_LIST"
+    ],
+
+
+    "rules"     : [
+        ["START", "PROG", "end"],
+
+        ["PROG", "MAIN_FUNCTION"],
+        ["PROG", "MAIN_FUNCTION", "FUNCTIONS"],
+        ["PROG", "FUNCTIONS", "MAIN_FUNCTION"],
+
+        ["FUNCTIONS", "FUNCTION"],
+        ["FUNCTIONS", "FUNCTIONS", "FUNCTION"],
+
+        ["FUNCTION", "func_lex", "ident", "open_parentheses", "INPUT_PARAMS", "close_parentheses", "TYPE", "open_brace", "OPERATORS", "close_brace"],
+        ["MAIN_FUNCTION", "func_lex", "main_lex", "open_parentheses", "close_parentheses", "open_brace", "OPERATORS", "close_brace"],
+
+        ["TYPE"],
+        ["TYPE", "int_lex"],
+        ["TYPE", "float_lex"],
+        ["TYPE", "string_lex"],
+        ["TYPE", "bool_lex"],
+
+
+        ["INPUT_PARAMS"],
+        ["INPUT_PARAMS", "NOTVOID_INPUT_PARAMS"],
+        ["NOTVOID_INPUT_PARAMS", "INPUT_PARAM"],
+        ["NOTVOID_INPUT_PARAMS", "NOTVOID_INPUT_PARAMS", "comma", "INPUT_PARAM"],
+
+        ["INPUT_PARAM", "ident", "TYPE"],
+
+        ["OPERATORS"],
+        ["OPERATORS", "OPERATORS", "OPERATOR"],
+
+        ["OPERATOR", "FUNCTION_CALL"],
+        ["OPERATOR", "EQUATE"],
+        ["OPERATOR", "CYCLES"],
+        ["OPERATOR", "IF"],
+        ["OPERATOR", "OPERATORS_BLOCK"],
+        ["OPERATOR", "VAR_DECL"],
+        ["OPERATOR", "return_lex", "EXPR"],
+
+        ["OPERATORS_BLOCK", "open_brace", "OPERATORS", "close_brace"],
+
+        ["FUNCTION_CALL", "ident", "open_parentheses", "PARAMS", "close_parentheses"],
+        ["FUNCTION_CALL", "print", "open_parentheses", "PARAMS", "close_parentheses"],
+        ["FUNCTION_CALL", "scan", "open_parentheses", "PARAMS", "close_parentheses"],
+
+        ["PARAMS"],
+        ["PARAMS", "NOTVOID_PARAMS"],
+        ["NOTVOID_PARAMS", "PARAM"],
+        ["NOTVOID_PARAMS", "NOTVOID_PARAMS", "comma", "PARAM"],
+
+        ["PARAM", "EXPR"],
+
+        ["EQUATE", "ident", "equating", "EXPR"],
+        ["EQUATE", "ident", "open_bracket", "EXPR", "close_bracket", "equating", "EXPR"],
+        ["CYCLES", "FOR"],
+        ["CYCLES", "WHILE"],
+        ["CYCLES", "FOR_IN"],
+
+        ["FOR", "for_lex", "FOR_INIT", "semicolon", "EXPR", "semicolon", "FOR_ITER", "OPERATOR"],
+        ["WHILE", "for_lex", "EXPR", "OPERATOR"],
+        ["FOR_IN", "for_lex", "ident", "in_lex", "ident", "OPERATOR"],
+
+        ["FOR_INIT"],
+        ["FOR_INIT", "EQUATE"],
+        ["FOR_INIT", "EXPR"],
+        ["FOR_INIT", "VAR_DECL"],
+
+        ["FOR_ITER"],
+        ["FOR_ITER", "FUNCTION_CALL"],
+        ["FOR_ITER", "EQUATE"],
+
+        ["IF", "if_lex", "EXPR", "OPERATOR"],
+        ["IF", "if_lex", "EXPR", "OPERATOR", "else_lex", "OPERATOR"],
+
+        ["VAR_DECL", "var_lex", "IDENT_LIST", "TYPE"],
+        ["IDENT_LIST", "ident"],
+        ["IDENT_LIST", "IDENT_LIST", "comma", "IDENT_LIST"],
+
+        ["EXPR", "ident"],
+        ["EXPR", "open_parentheses", "EXPR", "close_parentheses"],
+        ["EXPR", "int_const"],
+        ["EXPR", "float_const"],
+        ["EXPR", "bool_const"],
+        ["EXPR", "string_const"],
+        ["EXPR", "FUNCTION_CALL"],
+        ["EXPR", "not", "EXPR"],
+        ["EXPR", "EXPR", "greater_or_eq", "EXPR"],
+        ["EXPR", "EXPR", "less_or_eq", "EXPR"],
+        ["EXPR", "EXPR", "not_equal", "EXPR"],
+        ["EXPR", "EXPR", "is_equal", "EXPR"],
+        ["EXPR", "EXPR", "greater", "EXPR"],
+        ["EXPR", "EXPR", "less", "EXPR"],
+
+        ["EXPR", "EXPR", "plus", "EXPR"],
+        ["EXPR", "EXPR", "minus", "EXPR"],
+        ["EXPR", "EXPR", "div", "EXPR"],
+        ["EXPR", "EXPR", "mod", "EXPR"],
+        ["EXPR", "EXPR", "mult", "EXPR"],
+
+        ["EXPR", "EXPR", "or", "EXPR"],
+        ["EXPR", "EXPR", "and", "EXPR"]
+    ]
+}

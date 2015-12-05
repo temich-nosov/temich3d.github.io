@@ -1,0 +1,110 @@
+{
+    "start"     : "START",
+    "terms"     :
+    [
+        "ident", "int_const", "float_const", "func_lex", "if_lex", "else_lex",
+        "for_lex", "range_lex", "case_lex", "break_lex", "default_lex", "switch_lex",
+        "var_lex", "bool_lex", "int_lex", "float_lex", "string_lex", "return_lex",
+        "string_const", "and", "or", "greater_or_eq", "less_or_eq", "not_equal",
+        "is_equal", "assing", "plus_eq", "minus_eq", "div_eq", "mod_eq", "mul_eq",
+        "plus", "minus", "mult", "div", "mod", "equating", "greater", "less",
+        "not", "inc", "dec", "open_parentheses",
+        "close_parentheses",
+        "open_bracket",
+        "close_bracket",
+        "semicolon",
+        "colon",
+        "comma",
+        "point",
+        "open_brace",
+        "close_brace",
+        "print",
+        "scan",
+        "pow",
+        "main_lex"
+    ],
+    "noterms"   :
+    [
+        "START", "PROG", "FUNCTIONS", "MAIN_FUNCTION", "OPERATORS",
+        "VAR_LIST", "VAR_DECL", "NAME_LIST", "TYPE", "OPERATOR", "EXPR",
+        "CONDITION", "FUNCTION", "PARAMS", "CMP", "LOG", "CMP_OP", "NUM_EXPR",
+        "STR_EXPR", "TERM", "STR_TERM"
+    ],
+
+
+    "rules"     : [
+        ["START", "PROG", "end"],
+        ["PROG", "FUNCTIONS", "MAIN_FUNCTION"],
+        ["PROG", "MAIN_FUNCTION"],
+
+        ["VAR_DECL", "var_lex", "VAR_LIST"],
+        ["VAR_LIST", "NAME_LIST", "TYPE"],
+        ["NAME_LIST", "ident"],
+        ["NAME_LIST", "ident", "comma", "NAME_LIST"],
+
+        ["TYPE", "bool_lex"],
+        ["TYPE", "int_lex"],
+        ["TYPE", "float_lex"],
+        ["TYPE", "string_lex"],
+
+        ["MAIN_FUNCTION", "func_lex", "main_lex", "open_parentheses", "close_parentheses", "open_brace", "OPERATORS", "close_brace"],
+
+        ["OPERATORS", "OPERATOR"],
+        ["OPERATORS", "OPERATOR", "OPERATORS"],
+
+        ["OPERATOR", "ident", "equating", "EXPR"],
+        ["OPERATOR", "EXPR"],
+        ["OPERATOR", "if_lex", "CONDITION", "open_brace", "OPERATORS", "close_brace"],
+        ["OPERATOR", "if_lex", "CONDITION", "open_brace", "OPERATORS", "close_brace", "else_lex", "open_brace", "OPERATORS", "close_brace"],
+        ["OPERATOR", "for_lex", "CONDITION", "open_brace", "OPERATORS", "close_brace"],
+        ["OPERATOR", "for_lex", "ident", "equating", "EXPR", "semicolon", "CONDITION", "semicolon", "OPERATOR", "open_brace", "OPERATORS", "close_brace"],
+        ["OPERATOR", "print", "open_parentheses", "EXPR", "close_parentheses"],
+        ["OPERATOR", "scan", "open_parentheses", "EXPR", "close_parentheses"],
+        ["OPERATOR", "pow", "open_parentheses", "EXPR", "close_parentheses"],
+        ["OPERATOR", "open_bracket", "OPERATORS","close_bracket"],
+        ["OPERATOR", "VAR_DECL"],
+
+        ["FUNCTIONS", "FUNCTION"],
+        ["FUNCTIONS", "FUNCTIONS", "FUNCTION"],
+
+        ["FUNCTION", "func_lex", "ident", "open_parentheses", "PARAMS", "close_parentheses", "TYPE", "open_brace", "OPERATORS", "close_brace"],
+        ["FUNCTION", "func_lex", "ident", "open_parentheses", "PARAMS", "close_parentheses", "TYPE", "open_brace", "OPERATORS", "return_lex", "EXPR", "close_brace"],
+        ["FUNCTION", "func_lex", "ident", "open_parentheses", "close_parentheses", "open_brace", "OPERATORS", "close_brace"],
+        ["FUNCTION", "func_lex", "ident", "open_parentheses", "close_parentheses", "open_brace", "OPERATORS", "return_lex", "EXPR", "close_brace"],
+
+        ["PARAMS", "ident", "TYPE"],
+        ["PARAMS", "ident", "TYPE", "comma", "PARAMS"],
+
+        ["CONDITION", "not", "CONDITION"],
+        ["CONDITION", "EXPR"],
+        ["CONDITION", "CMP"],
+        ["CONDITION", "CMP", "LOG", "CONDITION"],
+
+        ["CMP", "EXPR", "CMP_OP", "EXPR"],
+        ["CMP_OP", "greater_or_eq"],
+        ["CMP_OP", "less_or_eq"],
+        ["CMP_OP", "not_equal"],
+        ["CMP_OP", "is_equal"],
+        ["CMP_OP", "greater"],
+        ["CMP_OP", "less"],
+
+        ["LOG", "and"],
+        ["LOG", "or"],
+
+        ["EXPR", "NUM_EXPR"],
+        ["TERM", "ident", "open_parentheses", "EXPR", "close_parentheses"],
+
+        ["NUM_EXPR", "TERM"],
+        ["NUM_EXPR", "TERM", "plus", "NUM_EXPR"],
+        ["NUM_EXPR", "TERM", "minus", "NUM_EXPR"],
+        ["NUM_EXPR", "TERM", "mult", "NUM_EXPR"],
+        ["NUM_EXPR", "TERM", "div", "NUM_EXPR"],
+        ["NUM_EXPR", "TERM", "mod", "NUM_EXPR"],
+
+        ["TERM", "ident"],
+        ["TERM", "string_const"],
+        ["TERM", "open_parentheses", "NUM_EXPR", "close_parentheses"],
+        ["TERM", "int_const"],
+        ["TERM", "float_const"]
+    ]
+}

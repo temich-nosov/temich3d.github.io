@@ -1,0 +1,41 @@
+.HTMLConsole {
+    padding: 10px;
+    margin: 10px;
+
+    /*width : 80%;*/
+    height : 300px;
+
+    /* Граница */
+    border-style: solid;
+    border-width: 1px;
+    border-color: #000;
+
+    overflow: auto;
+}
+
+.HTMLConsole_child {
+    padding: 10px;
+    margin: 10px;
+
+    /* Граница */
+    border-style: solid;
+    border-width: 1px;
+    border-color: #000;
+
+    overflow: auto;
+}
+
+.HTMLConsole_child h3 {
+    font-family: Consolas;
+    font-size: 15pt;
+}
+
+.HTMLConsole h3 {
+    font-family: Consolas;
+    font-size: 15pt;
+}
+
+.HTMLConsole > div {
+    font-family: Consolas;
+    font-size: 8pt;
+}
