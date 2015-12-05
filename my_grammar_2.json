@@ -18,7 +18,8 @@
         "OPERATORS", "TYPE", "INPUT_PARAM", "NOTVOID_INPUT_PARAMS", "OPERATORS",
         "OPERATOR", "EXPR", "FUNCTION_CALL", "EQUATE", "CYCLES", "IF",
         "OPERATORS_BLOCK", "VAR_DECL", "PARAMS", "PARAM", "NOTVOID_PARAMS",
-        "FOR", "WHILE", "FOR_IN", "FOR_INIT", "FOR_ITER", "IDENT_LIST"
+        "FOR", "WHILE", "FOR_IN", "FOR_INIT", "FOR_ITER", "IDENT_LIST",
+        "EXPR0", "EXPR1", "EXPR2", "EXPR3", "EXPR4"
     ],
 
 
@@ -99,28 +100,36 @@
         ["IDENT_LIST", "ident"],
         ["IDENT_LIST", "IDENT_LIST", "comma", "IDENT_LIST"],
 
-        ["EXPR", "ident"],
-        ["EXPR", "open_parentheses", "EXPR", "close_parentheses"],
-        ["EXPR", "int_const"],
-        ["EXPR", "float_const"],
-        ["EXPR", "bool_const"],
-        ["EXPR", "string_const"],
-        ["EXPR", "FUNCTION_CALL"],
-        ["EXPR", "not", "EXPR"],
-        ["EXPR", "EXPR", "greater_or_eq", "EXPR"],
-        ["EXPR", "EXPR", "less_or_eq", "EXPR"],
-        ["EXPR", "EXPR", "not_equal", "EXPR"],
-        ["EXPR", "EXPR", "is_equal", "EXPR"],
-        ["EXPR", "EXPR", "greater", "EXPR"],
-        ["EXPR", "EXPR", "less", "EXPR"],
+        ["EXPR0", "ident"],
+        ["EXPR0", "FUNCTION_CALL"],
+        ["EXPR0", "int_const"],
+        ["EXPR0", "float_const"],
+        ["EXPR0", "bool_const"],
+        ["EXPR0", "string_const"],
+        ["EXPR0", "open_parentheses", "EXPR", "close_parentheses"],
+        ["EXPR0", "not", "UN_EXPR"],
 
-        ["EXPR", "EXPR", "plus", "EXPR"],
-        ["EXPR", "EXPR", "minus", "EXPR"],
-        ["EXPR", "EXPR", "div", "EXPR"],
-        ["EXPR", "EXPR", "mod", "EXPR"],
-        ["EXPR", "EXPR", "mult", "EXPR"],
+        ["EXPR1", "EXPR0"],
+        ["EXPR1", "EXPR1", "mult", "EXPR0"],
+        ["EXPR1", "EXPR1", "div", "EXPR0"],
+        ["EXPR1", "EXPR1", "mod", "EXPR0"],
 
-        ["EXPR", "EXPR", "or", "EXPR"],
-        ["EXPR", "EXPR", "and", "EXPR"]
+        ["EXPR2", "EXPR1"],
+        ["EXPR2", "EXPR2", "plus", "EXPR1"],
+        ["EXPR2", "EXPR2", "minus", "EXPR1"],
+
+        ["EXPR3", "EXPR2"],
+        ["EXPR3", "EXPR3", "greater_or_eq", "EXPR2"],
+        ["EXPR3", "EXPR3", "less_or_eq", "EXPR2"],
+        ["EXPR3", "EXPR3", "not_equal", "EXPR2"],
+        ["EXPR3", "EXPR3", "is_equal", "EXPR2"],
+        ["EXPR3", "EXPR3", "greater", "EXPR2"],
+        ["EXPR3", "EXPR3", "less", "EXPR2"],
+
+        ["EXPR4", "EXPR3"],
+        ["EXPR4", "EXPR4", "and", "EXPR3"],
+
+        ["EXPR", "EXPR4"],
+        ["EXPR", "EXPR", "or", "EXPR4"]
     ]
 }
