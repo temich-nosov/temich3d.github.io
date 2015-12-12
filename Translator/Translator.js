@@ -1,6 +1,7 @@
 function Translator(lex_table, grammar_rules) {
     this.lexer = new Lexer(lex_table);
     this.parser = new Parser();
+    this.semantic = new SemanticAnalyzer();
 
     this.translate = function(prog_text) {
         var translate_res = {}
@@ -29,12 +30,15 @@ function Translator(lex_table, grammar_rules) {
             return translate_res;
         }
 
-        // Пункт второй -- проверка типов и правильности выражений
+        // ========================================================
+        // Стадия 3. Семантический анализ
         // TODO
+        console.log(translate_res);
+        translate_res.semantic = this.semantic.semantic_analysis(translate_res.parser.tree);
 
 
         // ========================================================
-        // Стадия 3. Генератор кода
+        // Стадия 4. Генератор кода
         // TODO
 
 

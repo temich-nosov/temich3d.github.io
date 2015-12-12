@@ -114,12 +114,12 @@
         <!-- Парсер JSON -->
         <script type="text/javascript" src="Parser.js"></script>
 
-        <!-- Лексический анализатор -->
+        <!-- Транслятор -->
         <script type="text/javascript" src="Translator/Lexer.js"></script>
-
-        <!-- Синтаксический анализатор -->
-        <script type="text/javascript" src="Translator/Translator.js"></script>
         <script type="text/javascript" src="Translator/Parser.js"></script>
+        <script type="text/javascript" src="Translator/SemanticAnalizer.js"></script>
+        <script type="text/javascript" src="Translator/Translator.js"></script>
+
         <script type="text/javascript" src="syntax_tree_visualize.js"></script>
 
 
@@ -164,6 +164,8 @@
                     console.log(xhr.responseText);
                 }
 
+                //console.log(JSON_parse(grammar_rules_text));
+                //console.log(JSON.parse(grammar_rules_text));
                 transator = new Translator(JSON_parse(lex_table_text), JSON_parse(grammar_rules_text));
             }
 
@@ -182,9 +184,9 @@
                 }
 
                 // Добавим "консоль"
-                //translation_console = new HTMLConsole("Консоль");
-                //document.body.appendChild(translation_console.getHTML());
-                //translation_console.addMassage("New massage");
+                // translation_console = new HTMLConsole("Консоль");
+                // document.body.appendChild(translation_console.getHTML());
+                // translation_console.addMassage("New massage");
 
                 translator_init();
             }
@@ -245,6 +247,10 @@
                     text = text.replace(/</gi, "&lt;");
                     text = text.replace(/>/gi, "&gt;");
                     text = text.replace(/\n/gi, "<br>");
+
+                    if (val.ident_link) {
+                        text += "(" + val.ident_link + ")";
+                    }
 
                     span.innerHTML = text;
                     lex_prog_container.appendChild(span);

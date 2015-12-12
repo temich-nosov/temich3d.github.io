@@ -5,15 +5,7 @@ function Parser() {
     this.fsm = {};
 
     this.rule_to_str = function(rule) {
-        var res = "";
-        if (rule.length) {
-            res = rule[0];
-        }
-
-        for (var i = 1; i < rule.length; ++i)
-            res += noterm_separator + rule[i];
-
-        return res;
+        return "" + rule;
     };
 
     this.rules_to_str = function(rules) {
@@ -27,82 +19,60 @@ function Parser() {
         return res;
     };
 
-    this.is_term = function(grammar_rules, str) {
-        for (var i = 0; i < grammar_rules.terms.length; ++i) {
-            if (grammar_rules.terms[i] == str)
+    this.is_term = function(str) {
+        if (str == "end") return true;
+
+        for (var i = 0; i < this.grammar_rules.terms.length; ++i) {
+            if (this.grammar_rules.terms[i] == str)
                 return true;
         }
 
         return false;
     };
 
-    this.extand_state = function(rules, grammar_rules) {
-        // Набор правил со звездочкой, которая отмечает наше текущее положение.
+    this.extand_state = function(rules) {
+        // Набор правил с нашей текущей позицией
         // Расширяет его до полного набора
-
         var maked_rule = {};
-        for (var i = 0; i < rules.length; ++i) {
+        var i;
+
+        for (i = 0; i < rules.length; ++i) {
             maked_rule[this.rule_to_str(rules[i])] = true;
         }
 
         // Теперь для каждого правила просмотрим что мы можем добавить
-        for (var i = 0; i < rules.length; ++i) {
-            // Найдем в текущем правиле звездочку
-            var j;
-            for (j = 0; rules[i][j] != '*'; ++j);
+        for (i = 0; i < rules.length; ++i) {
+            var cur_rule = this.grammar_rules.rules[rules[i][0]][rules[i][1]];
 
-            // Звездочка в позиции j
-            if (rules[i].length - 1 != j) {
-                // Следующая хрень -- то, что нам нужно добавить
-                ++j;
-                if (!this.is_term(grammar_rules, rules[i][j])) {
-                    // добавим в add_rules новые правила
+            if (rules[i][2] < cur_rule.length && !this.is_term(cur_rule[rules[i][2]])) {
+                var analiz_rules = this.grammar_rules.rules[cur_rule[rules[i][2]]];
 
-                    var analiz_rules = grammar_rules.rules;
+                for (j = 0; j < analiz_rules.length; ++j) {
+                    var tmp_rule_to_add = [cur_rule[rules[i][2]], j, 0];
 
-                    for (var k = 0; k < analiz_rules.length; ++k) {
-                        if (analiz_rules[k][0] == rules[i][j]) {
-                            var tmp = analiz_rules[k].slice();
-                            tmp.splice(1, 0, '*');
-                            var rules_str = this.rule_to_str(tmp);
-                            if (!maked_rule[rules_str]) {
-                                rules.push(tmp);
-                                maked_rule[rules_str] = true;
-                            }
-                        }
+                    if (!maked_rule[this.rule_to_str(tmp_rule_to_add)]) {
+                        maked_rule[this.rule_to_str(tmp_rule_to_add)] = true;
+                        rules.push(tmp_rule_to_add);
                     }
                 }
             }
         }
-
-        //console.log(maked_rule);
         return rules;
     };
 
-    this.make_state_by_shift = function(rules, token, grammar_rules) {
+    this.make_state_by_shift = function(rules, token) {
         var new_rules = [];
 
         for (var i = 0; i < rules.length; ++i) {
-            // Найдем в текущем правиле звездочку
-            var j;
-            for (j = 0; rules[i][j] != '*'; ++j);
+            var cur_rule = this.grammar_rules.rules[rules[i][0]][rules[i][1]];
 
-            // Звездочка в позиции j
-            if (rules[i].length - 1 != j) {
-                // Если после звездочки то что нам нужно --
-                // то это правило меняем и добавляем к новым
-                ++j;
-                if (rules[i][j] == token) {
-                    var copy = rules[i].slice();
-                    copy.splice(j - 1, 1);
-                    --j;
-                    copy.splice(j + 1, 0, "*");
-                    new_rules.push(copy);
-                }
+            if (rules[i][2] < cur_rule.length && cur_rule[rules[i][2]] == token) {
+                new_rules.push(rules[i].slice()); // Копируем правило
+                new_rules[new_rules.length - 1][2]++;// Передвигаем вперед текущую позицию
             }
         }
 
-        this.extand_state(new_rules, grammar_rules);
+        this.extand_state(new_rules);
         return new_rules;
     };
 
@@ -114,18 +84,19 @@ function Parser() {
         var res = false;
         var ambiguous = false;
 
-        rules.forEach(function(rule) {
-            if (rule[rule.length - 1] == "*") {
+        for (var i = 0; i < rules.length; ++i) {
+            var cur_rule = this.grammar_rules.rules[rules[i][0]][rules[i][1]];
+
+            if (rules[i][2] == cur_rule.length) {
                 if (res) {
                     ambiguous = true;
                     console.log("Неоднозначная свертка!");
                     console.log(rules);
                 }
 
-                res = rule.slice();
-                res.splice(-1, 1);
+                res = [rules[i][0], rules[i][1]];
             }
-        });
+        }
 
         if (ambiguous) {
             return {
@@ -147,9 +118,17 @@ function Parser() {
         // Может так же вернуть ошибку, если невозможно произвести свертку и сдвинуть символ
 
         // Проанализируем все возможные состояние конечного автомата
-        var possible_tokens = this.grammar_rules.terms.slice().concat(this.grammar_rules.noterms, "end");
+        // Для начала составим список нетерминалов
+        this.grammar_rules.notermlist = [];
+        for (var key in this.grammar_rules.rules) {
+            this.grammar_rules.notermlist.push(key);
+        }
 
-        var start_rules = this.extand_state([["*", this.grammar_rules.start]], this.grammar_rules);
+        var possible_tokens = this.grammar_rules.terms.slice().concat(this.grammar_rules.notermlist, "end");
+
+        // Теперь состаяние -- это множество вида СВОРАЧИВАЕМЫЙ_НЕТЕРМИНАЛ, номер правила, позиция
+        var start_rules = this.extand_state([ ["START", 0, 0] ]);
+        console.log("=== >", start_rules);
 
         var states = [{
             "id" : 0,
@@ -168,7 +147,9 @@ function Parser() {
             var error = false;
 
             possible_tokens.forEach(function(token) {
-                var new_state_rule = t_this.make_state_by_shift(states[cur_state].rules, token, t_this.grammar_rules);
+                if (error) return;
+
+                var new_state_rule = t_this.make_state_by_shift(states[cur_state].rules, token);
                 if (new_state_rule.length == 0)
                     return;
 
@@ -261,6 +242,12 @@ function Parser() {
         while ((stack.length != 1 || stack[0].name != this.grammar_rules.start)) {
             // Ок, получаем очередную команду
             if (noterm_stack.length != 0) {
+                if (noterm_stack[0].name == this.grammar_rules.start) {
+                    stack.push(noterm_stack[0]);
+                    noterm_stack.pop();
+                    continue;
+                }
+
                 // Это выполняется в том случае, если в очереди есть нетерминалы
                 var last_name = noterm_stack[noterm_stack.length - 1].name;
 
@@ -276,6 +263,7 @@ function Parser() {
                     var to_stack = {
                         name : last_name,
                         childs: noterm_stack[noterm_stack.length - 1].childs,
+                        rule: noterm_stack[noterm_stack.length - 1].rule,
                         state : command.next_state
                     };
 
@@ -285,13 +273,16 @@ function Parser() {
                 else {
                     // Свертка!
                     // console.log("reduce => ", command.rule);
-                    var cnt = command.rule.length - 1;
+                    console.log(command);
+                    console.log(state, last_name);
+                    var cnt = this.grammar_rules.rules[command.rule[0]][command.rule[1]].length;
                     var childs = stack.splice(-cnt, cnt);
                     var noterm_name = command.rule[0];
 
                     var obj = {
                         name : noterm_name,
-                        childs: childs
+                        childs: childs,
+                        rule: command.rule
                     }
 
                     noterm_stack.push(obj);
@@ -343,13 +334,14 @@ function Parser() {
             }
             else {
                 // Свертка!
-                var cnt = command.rule.length - 1;
+                var cnt = this.grammar_rules.rules[command.rule[0]][command.rule[1]].length;
                 var childs = stack.splice(-cnt, cnt);
                 var noterm_name = command.rule[0];
 
                 var obj = {
                     name : noterm_name,
-                    childs: childs
+                    childs: childs,
+                    rule: command.rule
                 }
 
                 noterm_stack.push(obj);

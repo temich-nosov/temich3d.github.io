@@ -22,18 +22,24 @@
       "float_lex": "float",
       "string_lex": "string",
       "return_lex" : "return",
-      "main_lex" : "main"
+      "main_lex" : "main",
+      "in_lex": "in"
     },
     "link" : "ident"
   },
+  "bool_const" : {
+    "style" : "bool_const_lex",
+    "reg": "^(true|false)",
+    "link": "arrayOfBoolConst"
+  },
   "int_const": {
     "style" : "int_const_lex",
-    "reg": "^([+-]?0|([1-9]\\d*))",
-    "link": "arrayOfIneConst"
+    "reg": "^(0|([1-9]\\d*))",
+    "link": "arrayOfIntConst"
   },
   "float_const": {
     "style" : "float_const_lex",
-    "reg": "^(-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?)",
+    "reg": "^((?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?)",
     "link": "arrayOfFloatConst"
   },
   "string_const": {
