@@ -28,6 +28,10 @@ function syntax_tree_visualize(syntax_tree) {
             main_header.appendChild(document.createTextNode(" " + syntax_tree.lex.value[1]));
         }
     }
+
+    if (syntax_tree.type) {
+        main_header.appendChild(document.createTextNode(" " + syntax_tree.type));
+    }
     main_header.onclick = (function() {
         childs_div.classList.toggle("unvisible");
 

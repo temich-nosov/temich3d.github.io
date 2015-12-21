@@ -91,6 +91,8 @@ function Parser() {
                 if (res) {
                     ambiguous = true;
                     console.log("Неоднозначная свертка!");
+                    console.log("Возможна свертка по правилу : ", rules[i][0], cur_rule);
+                    console.log("Также свертка по правилу : ", res);
                     console.log(rules);
                 }
 
@@ -130,12 +132,20 @@ function Parser() {
         var start_rules = this.extand_state([ ["START", 0, 0] ]);
         console.log("=== >", start_rules);
 
+        var red = this.can_reduce(start_rules);
+        if (red.status == "Error") {
+            return {
+                "status"     : "Error",
+                "Error_text" : "Неоднозначная свертка"
+            }
+        }
+
         var states = [{
             "id" : 0,
             "rules" : start_rules,
             "hash_str" : this.rules_to_str(start_rules),
             "goto" : {}, // Куда надо перейти из этого состояния если встретили очередной токен
-            "red" : false // Во что можно свернуть текущее состояние
+            "red" : red.result // Во что можно свернуть текущее состояние
         }];
 
         var hashes = {};

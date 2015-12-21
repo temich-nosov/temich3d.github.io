@@ -1,7 +1,13 @@
 {
   "indentation": {
-    "reg": "^\\s*",
+    "reg": "^[ \\t]+",
     "skip": true
+  },
+  "new_line": {
+    "reg" : "^\\n",
+    "list" : {
+      "new_line" : "\n"
+    }
   },
   "ident": {
     "style" : "ident_lex",
@@ -19,11 +25,12 @@
       "var_lex": "var",
       "bool_lex": "bool",
       "int_lex": "int",
-      "float_lex": "float",
+      "float_lex": "float64",
       "string_lex": "string",
       "return_lex" : "return",
       "main_lex" : "main",
-      "in_lex": "in"
+      "in_lex": "in",
+      "make_lex" : "make"
     },
     "link" : "ident"
   },
@@ -59,8 +66,9 @@
   },
   "operators": {
     "style" : "operators",
-    "reg": "^(&&|\\|\\||>=|<=|!=|==|:=|\\+=|-=|/=|%=|\\*=?|\\+\\+?|--?|/|%|=|>|<|!)",
+    "reg": "^(&&?|\\|\\||>=|<=|!=|==|:=|\\+=|-=|/=|%=|\\*=?|\\+\\+?|--?|/|%|=|>|<|!)",
     "list": {
+      "amp": "&",
       "and": "&&",
       "or": "||",
       "greater_or_eq": ">=",

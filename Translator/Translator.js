@@ -2,6 +2,7 @@ function Translator(lex_table, grammar_rules) {
     this.lexer = new Lexer(lex_table);
     this.parser = new Parser();
     this.semantic = new SemanticAnalyzer();
+    this.generator = new CodeGenerator();
 
     this.translate = function(prog_text) {
         var translate_res = {}
@@ -33,15 +34,21 @@ function Translator(lex_table, grammar_rules) {
         // ========================================================
         // Стадия 3. Семантический анализ
         // TODO
-        console.log(translate_res);
-        translate_res.semantic = this.semantic.semantic_analysis(translate_res.parser.tree);
+        // console.log(translate_res);
+        // translate_res.semantic = this.semantic.semantic_analysis(translate_res.parser.tree);
 
 
         // ========================================================
         // Стадия 4. Генератор кода
         // TODO
-
-
+        try {
+            translate_res.code = this.generator.GenerateCode(translate_res.parser.tree);
+        }
+        catch (e) {
+            console.log(e.name);
+            console.log(e.message);
+            console.log(e.stack);
+        }
         // ========================================================
         // Трансляция прошла успешно, возвращаем результат
         // для дальшейшей обработки

@@ -37,7 +37,7 @@
                 height : 80%;
             }
 
-            .prog_container{
+            .prog_container, .res_div {
                 display: inline-block;
                 width : 310px;
                 height : 510px;
@@ -118,6 +118,7 @@
         <script type="text/javascript" src="Translator/Lexer.js"></script>
         <script type="text/javascript" src="Translator/Parser.js"></script>
         <script type="text/javascript" src="Translator/SemanticAnalizer.js"></script>
+        <script type="text/javascript" src="Translator/CodeGenerator.js"></script>
         <script type="text/javascript" src="Translator/Translator.js"></script>
 
         <script type="text/javascript" src="syntax_tree_visualize.js"></script>
@@ -140,7 +141,7 @@
                 var grammar_rules_text;
 
                 var xhr = new XMLHttpRequest();
-                xhr.open('GET','lexem_table.json', false);
+                xhr.open('GET','lexem_table_2.json', false);
                 xhr.send();
 
                 if (xhr.status != 200) {
@@ -152,7 +153,7 @@
                 }
 
                 // Получаем правила грамматики из JSON файла
-                xhr.open('GET','my_grammar_2.json', false);
+                xhr.open('GET','my_grammar_3.json', false);
                 xhr.send();
 
                 if (xhr.status != 200) {
@@ -303,6 +304,8 @@
 
                 document.getElementById("syntax_tree").innerHTML = "";
                 document.getElementById("syntax_tree").appendChild(syntax_tree_visualize(translator_res.parser.tree));
+
+                document.getElementById("rescode").value = translator_res.code
             }
 
             function lex() {
@@ -335,6 +338,11 @@
         <div class="syntax_tree">
             <h2>Синтаксическое дерево:</h2>
             <div id="syntax_tree"></div>
+        </div>
+
+        <div class="res_div">
+            <textarea id="rescode">
+            </textarea>
         </div>
 
     </body>

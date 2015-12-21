@@ -559,10 +559,6 @@ function SemanticAnalyzer() {
         // Сделать проверку типов выражений!
 
 
-        // TODO
-        // Найти все изменяющиеся переменные!
-
-
         console.log(this.ident_table);
         console.log(this.functions_description);
         console.log(this.ident_table);

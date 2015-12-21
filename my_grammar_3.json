@@ -8,35 +8,43 @@
         "string_const", "and", "or", "greater_or_eq", "less_or_eq", "not_equal",
         "is_equal", "assing", "plus_eq", "minus_eq", "div_eq", "mod_eq", "mul_eq",
         "plus", "minus", "mult", "div", "mod", "equating", "greater", "less",
-        "not", "inc", "dec", "open_parentheses",
-        "close_parentheses", "open_bracket", "close_bracket", "semicolon",
+        "not", "inc", "dec", "open_parentheses", "close_parentheses", "open_bracket", "close_bracket", "semicolon",
         "colon", "comma", "point", "open_brace", "close_brace", "print", "scan", "pow", "main_lex", "bool_const",
-        "in_lex"
+        "in_lex", "new_line", "amp", "make_lex"
     ],
 
     "rules"     : {
+        "HSPACE" : [
+            [],
+            ["NOT_VOID_HSPACE"]
+        ],
+
+        "NOT_VOID_HSPACE" : [
+            ["new_line"],
+            ["NOT_VOID_HSPACE", "new_line"]
+        ],
+
         "START" : [
             ["PROG", "end"]
         ],
 
         "PROG" : [
-            ["MAIN_FUNCTION"],
-            ["MAIN_FUNCTION", "FUNCTIONS"],
-            ["FUNCTIONS", "MAIN_FUNCTION"],
-            ["FUNCTIONS", "MAIN_FUNCTION", "FUNCTIONS"]
+            ["HSPACE", "FUNCTIONS", "MAIN_FUNCTION", "FUNCTIONS"]
         ],
 
         "FUNCTIONS" : [
-            ["FUNCTION"],
+            [],
             ["FUNCTIONS", "FUNCTION"]
         ],
 
         "FUNCTION" : [
-            ["func_lex", "ident", "open_parentheses", "INPUT_PARAMS", "close_parentheses", "TYPE_WITH_VOID", "OPERATORS_BLOCK"]
+            ["func_lex", "ident", "open_parentheses", "INPUT_PARAMS", "close_parentheses", "TYPE_WITH_VOID",
+                "open_brace", "HSPACE", "VAR_DECLARATIONS", "OPERATORS", "close_brace", "HSPACE"]
         ],
 
         "MAIN_FUNCTION" : [
-            ["func_lex", "main_lex", "open_parentheses", "close_parentheses", "OPERATORS_BLOCK"]
+            ["func_lex", "main_lex", "open_parentheses", "close_parentheses",
+                "open_brace", "HSPACE", "VAR_DECLARATIONS", "OPERATORS", "close_brace", "HSPACE"]
         ],
 
         "TYPE_WITH_VOID" : [
@@ -44,11 +52,16 @@
             ["TYPE"]
         ],
 
+        "ARR_TYPE" : [
+            ["open_bracket", "close_bracket", "TYPE"]
+        ],
+
         "TYPE" : [
             ["int_lex"],
             ["float_lex"],
             ["string_lex"],
-            ["bool_lex"]
+            ["bool_lex"],
+            ["ARR_TYPE"]
         ],
 
         "INPUT_PARAMS" : [
@@ -61,6 +74,11 @@
             ["NOTVOID_INPUT_PARAMS", "comma", "INPUT_PARAM"]
         ],
 
+        "L_VALUE" : [
+            ["ident"],
+            ["L_VALUE", "open_bracket", "EXPR", "close_bracket"]
+        ],
+
         "INPUT_PARAM" : [
             ["ident", "TYPE"]
         ],
@@ -70,24 +88,33 @@
             ["OPERATORS", "OPERATOR"]
         ],
 
+        "NOT_VOID_VAR_DECLARATIONS" : [
+            ["VAR_DECL", "NOT_VOID_HSPACE"],
+            ["NOT_VOID_VAR_DECLARATIONS", "VAR_DECL", "NOT_VOID_HSPACE"]
+        ],
+
+        "VAR_DECLARATIONS" : [
+            [],
+            ["NOT_VOID_VAR_DECLARATIONS"]
+        ],
+
         "OPERATOR" : [
-            ["FUNCTION_CALL"],
-            ["EQUATE"],
-            ["CYCLES"],
-            ["IF"],
-            ["OPERATORS_BLOCK"],
-            ["VAR_DECL"],
-            ["return_lex", "EXPR"]
+            ["FUNCTION_CALL", "NOT_VOID_HSPACE"],
+            ["EQUATE", "NOT_VOID_HSPACE"],
+            ["CYCLES", "NOT_VOID_HSPACE"],
+            ["IF", "NOT_VOID_HSPACE"],
+            ["return_lex", "EXPR", "NOT_VOID_HSPACE"],
+            ["print", "open_parentheses", "NOTVOID_PARAMS", "close_parentheses", "NOT_VOID_HSPACE"],
+            ["scan", "open_parentheses", "amp", "L_VALUE", "close_parentheses", "NOT_VOID_HSPACE"],
+            ["return_lex", "NOT_VOID_HSPACE"]
         ],
 
         "OPERATORS_BLOCK" : [
-            ["open_brace", "OPERATORS", "close_brace"]
+            ["open_brace", "HSPACE", "OPERATORS", "close_brace"]
         ],
 
         "FUNCTION_CALL" : [
-            ["ident", "open_parentheses", "PARAMS", "close_parentheses"],
-            ["print", "open_parentheses", "PARAMS", "close_parentheses"],
-            ["scan", "open_parentheses", "PARAMS", "close_parentheses"]
+            ["ident", "open_parentheses", "PARAMS", "close_parentheses"]
         ],
 
         "PARAMS" : [
@@ -101,7 +128,7 @@
         ],
 
         "EQUATE" : [
-            ["ident", "equating", "EXPR"]
+            ["L_VALUE", "equating", "EXPR"]
         ],
 
         "CYCLES" : [
@@ -119,38 +146,31 @@
         ],
 
         "FOR_IN" : [
-            ["for_lex", "ident", "in_lex", "ident", "OPERATORS_BLOCK"]
+            ["for_lex", "ident", "in_lex", "L_VALUE", "OPERATORS_BLOCK"]
         ],
 
         "FOR_INIT" : [
             [],
-            ["EQUATE"],
-            ["EXPR"],
-            ["VAR_DECL"]
+            ["EQUATE"]
         ],
 
         "FOR_ITER" : [
             [],
-            ["FUNCTION_CALL"],
             ["EQUATE"]
         ],
 
         "IF" : [
             ["if_lex", "EXPR", "OPERATORS_BLOCK"],
-            ["if_lex", "EXPR", "OPERATORS_BLOCK", "else_lex", "OPERATORS_BLOCK"]
+            ["if_lex", "EXPR", "OPERATORS_BLOCK", "else_lex", "OPERATORS_BLOCK"],
+            ["if_lex", "EXPR", "OPERATORS_BLOCK", "else_lex", "IF"]
         ],
 
         "VAR_DECL" : [
-            ["var_lex", "IDENT_LIST", "TYPE"]
-        ],
-
-        "IDENT_LIST":[
-            ["ident"],
-            ["IDENT_LIST", "comma", "ident"]
+            ["var_lex", "ident", "TYPE"]
         ],
 
         "EXPR0" : [
-            ["ident"],
+            ["L_VALUE"],
             ["FUNCTION_CALL"],
             ["int_const"],
             ["float_const"],
@@ -159,7 +179,10 @@
             ["open_parentheses", "EXPR", "close_parentheses"],
             ["not", "EXPR0"],
             ["plus", "EXPR0"],
-            ["minus", "EXPR0"]
+            ["minus", "EXPR0"],
+            ["int_lex", "open_parentheses", "EXPR", "close_parentheses"],
+            ["float_lex", "open_parentheses", "EXPR", "close_parentheses"],
+            ["make_lex", "open_parentheses", "ARR_TYPE", "comma", "EXPR", "close_parentheses"]
         ],
 
         "EXPR1" : [
