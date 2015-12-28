@@ -277,7 +277,7 @@ function OBJ_reduce(stack) {
         stack[l - 1].value == "}" &&
         stack[l - 2].type == "delimiters" &&
         stack[l - 2].value == "{"
-        ) {
+    ) {
         stack.pop();
         stack.pop();
         stack.push({
@@ -294,7 +294,7 @@ function OBJ_reduce(stack) {
         (stack[l - 2].type == "pair" || stack[l - 2].type == "pairs") &&
         stack[l - 3].type == "delimiters" &&
         stack[l - 3].value == "{"
-        ) {
+    ) {
         stack.pop();
         var a = stack.pop();
         stack.pop();
@@ -324,7 +324,7 @@ function OBJ_reduce(stack) {
         stack[l - 1].value == "]" &&
         stack[l - 2].type == "delimiters" &&
         stack[l - 2].value == "["
-        ) {
+    ) {
         stack.pop();
         stack.pop();
         stack.push({
@@ -341,7 +341,7 @@ function OBJ_reduce(stack) {
         (is_value(stack[l - 2].type) || stack[l - 2].type == "values") &&
         stack[l - 3].type == "delimiters" &&
         stack[l - 3].value == "["
-        ) {
+    ) {
         stack.pop();
         var a = stack.pop();
         stack.pop();

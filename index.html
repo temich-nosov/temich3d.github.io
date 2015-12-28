@@ -123,14 +123,8 @@
 
         <script type="text/javascript" src="syntax_tree_visualize.js"></script>
 
-
-        <!-- Примочки для GUI -->
-        <script type="text/javascript" src="GUI/gui.js"></script>
-        <link href="GUI/GUIStyle.css" rel="stylesheet">
-
         <script type="text/javascript">
             var examples_list;
-            var translation_console;
             var transator;
             var hash_lexem_visualisation;
 
@@ -141,7 +135,7 @@
                 var grammar_rules_text;
 
                 var xhr = new XMLHttpRequest();
-                xhr.open('GET','lexem_table_2.json', false);
+                xhr.open('GET','lexem_table.json', false);
                 xhr.send();
 
                 if (xhr.status != 200) {
@@ -153,7 +147,7 @@
                 }
 
                 // Получаем правила грамматики из JSON файла
-                xhr.open('GET','my_grammar_3.json', false);
+                xhr.open('GET','go_grammar.json', false);
                 xhr.send();
 
                 if (xhr.status != 200) {
@@ -165,8 +159,6 @@
                     console.log(xhr.responseText);
                 }
 
-                //console.log(JSON_parse(grammar_rules_text));
-                //console.log(JSON.parse(grammar_rules_text));
                 transator = new Translator(JSON_parse(lex_table_text), JSON_parse(grammar_rules_text));
             }
 
@@ -183,11 +175,6 @@
                 selecter.onchange = function () {
                     document.getElementById('Program').value = examples_list[selecter.selectedOptions[0].value];
                 }
-
-                // Добавим "консоль"
-                // translation_console = new HTMLConsole("Консоль");
-                // document.body.appendChild(translation_console.getHTML());
-                // translation_console.addMassage("New massage");
 
                 translator_init();
             }

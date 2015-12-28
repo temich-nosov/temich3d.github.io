@@ -667,11 +667,11 @@ function CodeGenerator() {
                         "name" : "Semantic Error",
                         "message" : "Bad expr " + res
                     };
-                //} else if (node.childs[2].type != "int") {
-                //    throw {
-                //        "name" : "Semantic error",
-                //        "message" : "last expr must be int : " + res
-                //    }
+                } else if (node.childs[2].type[1] != "int" || node.childs[2].type[0] != 0) {
+                    throw {
+                        "name" : "Semantic error",
+                        "message" : "last expr must be int : " + res
+                    }
                 } else {
                     node.type = [];
                     node.type[0] = node.childs[0].type[0] - 1;
