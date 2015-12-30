@@ -1,336 +1,148 @@
+
 <!DOCTYPE html>
 <html lang="ru">
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <title>Parser GO</title>
-        <script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
-        <style>
-            * {
-                margin : 0;
-                padding: 0;
-            }
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-            table {
-                background: none repeat scroll 0 0 white;
-                border-collapse: separate;
-                border-color: #ccc;
-                border-spacing: 2px;
-            }
-            table thead {
-                background: none repeat scroll 0 0 #EDF4F7;
-            }
-            table tbody {
-                background: none repeat scroll 0 0 #F3F3F3;
-            }
-            tbody {
-                border-top: 0 none;
-            }
-            table td {
-                border-bottom: 0 none;
-                padding: 5px;
-            }
+    <title>Транслятор Go - Python</title>
 
-            textarea {
-                font-family: Consolas;
-                font-size: 10pt;
-                width : 90%;
-                height : 80%;
-            }
+    <!-- Ф-ии для интерфейса -->
+    <script type="text/javascript" src="GUI/gui.js"></script>
 
-            .prog_container, .res_div {
-                display: inline-block;
-                width : 310px;
-                height : 510px;
-                max-height : 510px;
-                overflow: auto;
-            }
+    <!-- Транслятор -->
+    <script type="text/javascript" src="Translator/Lexer.js"></script>
+    <script type="text/javascript" src="Translator/Parser.js"></script>
+    <script type="text/javascript" src="Translator/CodeGenerator.js"></script>
+    <script type="text/javascript" src="Translator/Translator.js"></script>
 
-            #lex_prog_container {
-                font-family: Consolas;
-                font-size: 10pt;
-                display: inline-block;
-                width : 310px;
-                height : 510px;
-                max-height : 510px;
-                overflow: auto;
-            }
+    <!-- Визуализация синтаксического дерева -->
+    <script type="text/javascript" src="syntax_tree_visualize.js"></script>
 
-            .lexems, .syntax_tree{
-                display: inline-block;
-                max-height : 510px;
-                width : 310px;
-                height : 510px;
-                overflow: auto;
-            }
+    <!-- Bootstrap CSS -->
+    <link href="./bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap тема -->
+    <link href="./bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
 
-            #syntax_tree {
-                font-family: Consolas;
-                font-size: 8pt;
-            }
+    <link href="./theme.css" rel="stylesheet">
+  </head>
 
-            .unvisible {
-                display: none;
-            }
+  <body role="document" onload="gui.init()">
+    <div class="container theme-showcase" role="main">
 
-            .tree_child_list {
-                margin-left: 6px;
-            }
+      <!-- Заголовок -->
+      <div class="page-header">
+        <h1>Транслятор Go - Python</h1>
+      </div>
 
-            .lexem:hover {
-                background-color: green;
-            }
-
-            .ident_lex {
-                color: #9c9c9c;
-                text-decoration: underline;
-            }
-
-            .separators, .operators {
-                color: #000000;
-            }
-
-            .string_const_lex {
-                color: #d49400;
-            }
-
-            .comment {
-                color: #aaa;
-            }
-
-            .keyword {
-                color: #0053aa;
-            }
-
-            .hover_class {
-                background-color: #cccccc;
-            }
-
-            #Program {
-                font-family: Consolas;
-                font-size: 10pt;
-            }
-        </style>
-
-        <!-- Парсер JSON -->
-        <script type="text/javascript" src="Parser.js"></script>
-
-        <!-- Транслятор -->
-        <script type="text/javascript" src="Translator/Lexer.js"></script>
-        <script type="text/javascript" src="Translator/Parser.js"></script>
-        <script type="text/javascript" src="Translator/SemanticAnalizer.js"></script>
-        <script type="text/javascript" src="Translator/CodeGenerator.js"></script>
-        <script type="text/javascript" src="Translator/Translator.js"></script>
-
-        <script type="text/javascript" src="syntax_tree_visualize.js"></script>
-
-        <script type="text/javascript">
-            var examples_list;
-            var transator;
-            var hash_lexem_visualisation;
-
-            function translator_init() {
-                // Инициализируем транслятор
-                // Получить таблицу лексем из JSON файла
-                var lex_table_text;
-                var grammar_rules_text;
-
-                var xhr = new XMLHttpRequest();
-                xhr.open('GET','lexem_table.json', false);
-                xhr.send();
-
-                if (xhr.status != 200) {
-                    // Хреново!
-                    console.log("Can not get lexem table!");
-                    return;
-                } else {
-                    lex_table_text = xhr.responseText;
-                }
-
-                // Получаем правила грамматики из JSON файла
-                xhr.open('GET','go_grammar.json', false);
-                xhr.send();
-
-                if (xhr.status != 200) {
-                    // Хреново!
-                    console.log("Can not get grammar rules!");
-                    return;
-                } else {
-                    grammar_rules_text = xhr.responseText;
-                    console.log(xhr.responseText);
-                }
-
-                transator = new Translator(JSON_parse(lex_table_text), JSON_parse(grammar_rules_text));
-            }
-
-            function body_onload() {
-                get_examples();
-
-                var selecter = document.getElementById("example_select");
-                for (key in examples_list) {
-                    var option = new Option(key, key);
-                    selecter.add(option);
-                }
-
-                document.getElementById('Program').value = examples_list[selecter.selectedOptions[0].value];
-                selecter.onchange = function () {
-                    document.getElementById('Program').value = examples_list[selecter.selectedOptions[0].value];
-                }
-
-                translator_init();
-            }
-
-            function get_examples() {
-                var xhr = new XMLHttpRequest();
-                xhr.open('GET','examples/list.json', false);
-                xhr.send();
-
-                if (xhr.status != 200) {
-                    // Хреново!
-                    console.log("Can not get examples!");
-                    return;
-                } else {
-                    examples_list = JSON_parse(xhr.responseText);
-                }
-
-                for (var name in examples_list) {
-                    var file = examples_list[name];
-
-                    xhr.open('GET','examples/' + file, false);
-                    xhr.send();
-
-                    if (xhr.status != 200) {
-                        // Хреново!
-                        console.log("Can not get example " + file + "!");
-                        return;
-                    } else {
-                        examples_list[name] = xhr.responseText;
-                    }
-                }
-
-                console.log(examples_list);
-            }
-
-            function result_visualization(translator_res) {
-                // Заполним таблицу с лексемами
-                var table = document.getElementById("lexems");
-                table.innerHTML = "";
-
-                // Заполним hash_lexem_visualisation
-                hash_lexem_visualisation = {};
-                // ====================================================================
-
-                var lex_prog_container = document.getElementById("lex_prog_container");
-                lex_prog_container.innerHTML = "";
-                translator_res.lexem_for_visualisation.forEach(function(val) {
-
-                    var span = document.createElement("span");
-                    span.className = "lexem";
-                    if (val.style) {
-                        span.className += " " + val.style;
-                    }
-
-                    var text = val.text;
-                    text = text.replace(/ /gi, "\u00A0"); // Все обычные пробелы заменим на неразрывные
-                    text = text.replace(/\t/gi, "\u00A0\u00A0\u00A0\u00A0"); // Табуляция -- 4 неразрыных пробела
-                    text = text.replace(/</gi, "&lt;");
-                    text = text.replace(/>/gi, "&gt;");
-                    text = text.replace(/\n/gi, "<br>");
-
-                    if (val.ident_link) {
-                        text += "(" + val.ident_link + ")";
-                    }
-
-                    span.innerHTML = text;
-                    lex_prog_container.appendChild(span);
-                    hash_lexem_visualisation[val.string + "|" + val.position] = {
-                        "visual_lex" : span
-                    };
-                })
-
-                translator_res.lexer.result.lexems.forEach(function(val, idx) {
-                    var row = table.insertRow(idx);
-                    hash_lexem_visualisation[val.string + "|" + val.position]["table_lex"] = row;
-
-                    var cell0 = row.insertCell(0);
-                    var cell1 = row.insertCell(1);
-                    var cell2 = row.insertCell(2);
-                    var cell3 = row.insertCell(3);
-
-                    cell0.appendChild(document.createTextNode(idx));
-
-                    if (!val.value) {
-                        cell1.innerHTML = val.type;
-                    } else {
-                        cell1.innerHTML = val.type;
-                        cell2.innerHTML = val.value[1];
-                        cell3.innerHTML = val.value[0];
-                    }
-                });
-
-                console.log(hash_lexem_visualisation);
-                for (var key in hash_lexem_visualisation) {
-                    var lex_DOM = hash_lexem_visualisation[key];
-                    if (lex_DOM.table_lex && lex_DOM.visual_lex) {
-                        // Свяжем лексемки ф-иями при наведении
-                        var functon_mouse_togle = (function() {
-                            var lex_DOM_l = lex_DOM;
-                            return function() {
-                                //console.log(lex_DOM_l);
-                                lex_DOM_l.table_lex.classList.toggle("hover_class");
-                                lex_DOM_l.visual_lex.classList.toggle("hover_class");
-                            }
-                        })();
-
-                        lex_DOM.table_lex.onmouseout = functon_mouse_togle;
-                        lex_DOM.visual_lex.onmouseout = functon_mouse_togle;
-
-                        lex_DOM.table_lex.onmouseover = functon_mouse_togle;
-                        lex_DOM.visual_lex.onmouseover = functon_mouse_togle;
-                    }
-                }
-
-                document.getElementById("syntax_tree").innerHTML = "";
-                document.getElementById("syntax_tree").appendChild(syntax_tree_visualize(translator_res.parser.tree));
-
-                document.getElementById("rescode").value = translator_res.code
-            }
-
-            function lex() {
-                // Попробуем транслировать примеры и выведем результат.
-                var res = transator.translate(document.getElementById("Program").value);
-                console.log(res);
-                result_visualization(res);
-            }
-        </script>
-    </head>
-
-    <body onload="body_onload()">
-        <div class="prog_container">
-            <h2>Программа:</h2>
-            <textarea id="Program">
-            </textarea>
-            <select id="example_select">
-            </select>
-            <button onclick="lex()">Распарсить</button>
+      <!-- Поле для ввода кода и результата трансляции -->
+      <div class="row">
+        <!-- Исхоный код -->
+        <div class="col-sm-6">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title">Исходный код</h3>
+            </div>
+            <div class="panel-body">
+              <!-- Поле для ввода исходного кода -->
+              <textarea id="Program"></textarea>
+            </div>
+          </div>
         </div>
 
-        <div id="lex_prog_container">
+        <!-- Транслированный код -->
+        <div class="col-sm-6">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title">Транслированный код</h3>
+            </div>
+            <div class="panel-body">
+              <!-- Поле c результатом трансляции -->
+              <textarea id="rescode"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <!-- Выбрать пример -->
+        <div class="col-sm-4">
+          <div class="list-group" id="example_select">
+          </div>
+
+          <!-- Кнопка транслировать -->
+          <button type="button" class="btn btn-sm btn-success" onclick="gui.translate()">Транслировать</button>
+        </div>
+      </div>
+
+      <!-- Сообщения об ошибках или успешной трансляции -->
+      <div class="row">
+        <div class="col-sm-12" id="result_msgs">
+        </div>
+      </div>
+
+
+      <!-- Таблицы -->
+      <div class="page-header">
+        <h2>Таблицы лексем и констант</h2>
+      </div>
+      <div class="row">
+        <!-- Таблица с лексемами -->
+        <div class="col-md-6" id="lexem_table">
+          <h3>Таблица лексем</h3>
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Лексема</th>
+                <th>Значение</th>
+                <th># в таблице констант</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>Mark</td>
+                <td>Otto</td>
+                <td>@mdo</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
 
-        <div class="lexems">
-            <h2>Таблица лексем:</h2>
-            <table id="lexems"></table>
-        </div>
 
-        <div class="syntax_tree">
-            <h2>Синтаксическое дерево:</h2>
-            <div id="syntax_tree"></div>
+        <!-- Таблицы с константами -->
+        <div class="col-md-6" id="const_tables">
+          <h3>Таблица strConst</h3>
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Константа</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>Mark</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
+      </div>
 
-        <div class="res_div">
-            <textarea id="rescode">
-            </textarea>
+
+      <!-- Дерево -->
+      <div class="page-header">
+        <h2>Синтаксическое дерево</h2>
+      </div>
+      <div class="row">
+        <div class="col-sm-12" id="syntax_tree">
+          <!-- Дерево -->
         </div>
+      </div>
 
-    </body>
+    </div>
+  </body>
 </html>

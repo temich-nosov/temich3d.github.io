@@ -59,7 +59,7 @@ function CodeGenerator() {
                     // Ошибка, дважды объявлена одна и та же ф-ия
                     throw {
                         "name" : "Semantic error",
-                        "message" : "double init " + name
+                        "message" : "Двойная инициализация " + name
                     }
                 }
 
@@ -91,7 +91,7 @@ function CodeGenerator() {
                 } else {
                     throw {
                         "name" : "Syntax Error",
-                        "message" : "var not declarate " + node.lex.value[1]
+                        "message" : "Переенная не объявлена " + node.lex.value[1]
                     }
                 }
             } else{
@@ -172,7 +172,7 @@ function CodeGenerator() {
                     if (res.var_hash[val.param_name]) {
                         throw {
                             "name" : "Semantic error",
-                            "message" : "2 param with name " + val.param_name
+                            "message" : "Два параметра с одним именем " + val.param_name
                         }
                     }
 
@@ -191,10 +191,10 @@ function CodeGenerator() {
                         // Добавим переменную
                         var name = var_node.childs[0].childs[1].lex.value[1];
                         var type = t_this.get_type(var_node.childs[0].childs[2]);
-                        if (res[name]) {
+                        if (res.var_hash[name]) {
                             throw {
                                 "name" : "Semantic error",
-                                "message" : "2 var with name " + name
+                                "message" : "2 переменные с одним именем " + name
                             }
                         }
 
@@ -206,10 +206,10 @@ function CodeGenerator() {
                         // Добавим переменную
                         var name = var_node.childs[1].childs[1].lex.value[1];
                         var type = t_this.get_type(var_node.childs[1].childs[2]);
-                        if (res[name]) {
+                        if (res.var_hash[name]) {
                             throw {
                                 "name" : "Semantic error",
-                                "message" : "2 var with name " + name
+                                "message" : "2 переменные с одним именем " + name
                             }
                         }
 
@@ -232,7 +232,7 @@ function CodeGenerator() {
                         if (res[name]) {
                             throw {
                                 "name" : "Semantic error",
-                                "message" : "2 var with name " + name
+                                "message" : "2 переменные с одним именем " + name
                             }
                         }
 
@@ -247,7 +247,7 @@ function CodeGenerator() {
                         if (res[name]) {
                             throw {
                                 "name" : "Semantic error",
-                                "message" : "2 var with name " + name
+                                "message" : "2 переменные с одним именем " + name
                             }
                         }
 
@@ -411,21 +411,21 @@ function CodeGenerator() {
                 if (type1 != type2) {
                     throw {
                         "name" : "Semantic error",
-                        "message" : "Несоответствие типов в " + res
+                        "message" : "Несоответствие типов " + res_l + " и " + res_r
                     }
                 }
 
                 if (type1 != "int" && type1 != "float") {
                     throw {
                         "name" : "Semantic error",
-                        "message" : "Недопустимый тип в " + res
+                        "message" : "Несоответствие типов " + res_l + " и " + res_r
                     }
                 }
 
                 if (node.rule[1] == 3 && type1 == "float") {
                     throw {
                         "name" : "Semantic error",
-                        "message" : "Недопустимый тип в " + res
+                        "message" : "Недопустимый тип в " + res_1
                     }
                 }
 
@@ -550,7 +550,7 @@ function CodeGenerator() {
                 }
 
                 node.type = [0, "bool"]
-                return "(" + translate_expr3(node.childs[0]) + ")" + cmp[idx] + "(" + translate_expr2(node.childs[2]) + ")";
+                return res;
             }
         }
 
@@ -571,7 +571,7 @@ function CodeGenerator() {
                 if (node.childs[0].type[0] != 0 || node.childs[0].type[1] != "bool" || node.childs[2].type[0] != 0 || node.childs[2].type[1] != "bool") {
                     throw {
                         "name" : "Semantic error",
-                        "message" : "values is not bool in " + res
+                        "message" : "Выражение не bool в " + res
                     }
                 }
 
@@ -603,7 +603,7 @@ function CodeGenerator() {
                 if (node.childs[0].type[0] != 0 || node.childs[0].type[1] != "bool" || node.childs[2].type[0] != 0 || node.childs[2].type[1] != "bool") {
                     throw {
                         "name" : "Semantic error",
-                        "message" : "values is not bool in " + res
+                        "message" : "Выражение не bool в " + res
                     }
                 }
 
@@ -633,7 +633,7 @@ function CodeGenerator() {
             if (node.childs[0].ident_type != "func") {
                 throw {
                     "name" : "Semantic Error",
-                    "message" : node.childs[0].lex.value[1] + " is not function"
+                    "message" : node.childs[0].lex.value[1] + " не функция!"
                 }
             }
 
@@ -653,7 +653,7 @@ function CodeGenerator() {
                 if (node.childs[0].ident_type == "func") {
                     throw {
                         "name" : "Semantic error",
-                        "message" : "Function name used in LValue expr! " + node.childs[0].lex.value[1]
+                        "message" : "Название ф-ии используется в качестве названия переменной! " + node.childs[0].lex.value[1]
                     }
                 } else {
                     node.type = node.childs[0].ident_val;
@@ -665,12 +665,12 @@ function CodeGenerator() {
                 if (node.childs[0].type[0] == 0) {
                     throw {
                         "name" : "Semantic Error",
-                        "message" : "Bad expr " + res
+                        "message" : "Неправильное выражение " + res
                     };
                 } else if (node.childs[2].type[1] != "int" || node.childs[2].type[0] != 0) {
                     throw {
                         "name" : "Semantic error",
-                        "message" : "last expr must be int : " + res
+                        "message" : "Выражение должно быть типа int " + res
                     }
                 } else {
                     node.type = [];
@@ -688,7 +688,7 @@ function CodeGenerator() {
             if (node.childs[0].type[0] != node.childs[2].type[0] || node.childs[0].type[1] != node.childs[2].type[1]) {
                 throw {
                     "name" : "Semantic Error",
-                    "message" : "Несоответствие типов в присваивании"
+                    "message" : "Несоответствие типов в присваивании " + res
                 }
             }
 

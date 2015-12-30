@@ -47,7 +47,7 @@ function Lexer(lex_table) {
         return false;
     };
 
-    this.lexer = function(txt, lexem_for_visualisation) {
+    this.lexer = function(txt) {
         this.str_cnt = 0;
         this.pos_int_str = 0;
 
@@ -110,22 +110,6 @@ function Lexer(lex_table) {
                         }
                     };
                 } else {
-                    // По сути дубликат таблицы лексем, нужен чисто для визуализации
-                    // Единственная разница -- в этот массив помещаются всякие пробелы, и прочее
-                    var style_for_lexem_for_visualisation = this.lex_table[max_eq_type].style;
-                    if (max_eq_type == "ident" && !lexem.value) {
-                        // Ключевое слово
-                        style_for_lexem_for_visualisation = "keyword";
-                    }
-
-                    lexem_for_visualisation.push({
-                        "string" : this.str_cnt + 1,
-                        "position" : this.pos_int_str,
-                        "text" : match,
-                        "skip" : (lexem === true),
-                        "style" : style_for_lexem_for_visualisation
-                    });
-
                     // Добавим лексему в список лексем
                     if (!(lexem === true)) {
                         lexem["string"] = this.str_cnt + 1;

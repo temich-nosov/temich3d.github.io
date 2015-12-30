@@ -8,10 +8,8 @@ function Translator(lex_table, grammar_rules) {
 
         // ========================================================
         // Стадия 1. Лексический анализатор
-        var lexem_for_visualisation = [];
-        var lexer_res = this.lexer.lexer(prog_text, lexem_for_visualisation);
+        var lexer_res = this.lexer.lexer(prog_text);
         translate_res.lexer = lexer_res;
-        translate_res.lexem_for_visualisation = lexem_for_visualisation;
 
         if (lexer_res.status == "Error") {
             translate_res.status = "Error";
@@ -37,6 +35,8 @@ function Translator(lex_table, grammar_rules) {
             translate_res.code = this.generator.GenerateCode(translate_res.parser.tree);
         }
         catch (e) {
+            translate_res.status = "Error";
+            translate_res.code = e;
             console.log(e.name);
             console.log(e.message);
             console.log(e.stack);
@@ -44,7 +44,9 @@ function Translator(lex_table, grammar_rules) {
         // ========================================================
         // Трансляция прошла успешно, возвращаем результат
         // для дальшейшей обработки
-        translate_res.status = "Ok";
+        if (!translate_res.status) {
+            translate_res.status = "Ok";
+        }
         return translate_res;
     }
 
@@ -53,7 +55,7 @@ function Translator(lex_table, grammar_rules) {
     if (init_result.status == "Error") {
         // Ошибка
         console.log("Ошибка инициализации парсера!");
-        console.log(init_result);
+        // console.log(init_result);
         return;
     }
 }

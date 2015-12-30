@@ -7,7 +7,7 @@ function syntax_tree_visualize(syntax_tree) {
     // {name : lol, childs: [], state : st, [lex : ololo]}
 
     var main_div = document.createElement('div');
-    var main_header = document.createElement('a');
+    var main_header = document.createElement('span');
     var childs_div = document.createElement('div');
     childs_div.className = "tree_child_list unvisible";
 
@@ -34,27 +34,6 @@ function syntax_tree_visualize(syntax_tree) {
     }
     main_header.onclick = (function() {
         childs_div.classList.toggle("unvisible");
-
-        // Для всех лексем в обоих списках с лексеми переключу hover_class
-        for (var key in hash_lexem_visualisation) {
-            var lex_DOM = hash_lexem_visualisation[key];
-            if (lex_DOM.table_lex && lex_DOM.visual_lex) {
-                lex_DOM.table_lex.classList.remove("hover_class");
-                lex_DOM.visual_lex.classList.remove("hover_class");
-            }
-        }
-
-        (function dfs(syntax_tree) {
-            for (var i = 0; syntax_tree.childs && i < syntax_tree.childs.length; ++i) {
-                dfs(syntax_tree.childs[i]);
-            }
-
-            if (syntax_tree.lex) {
-                var dom_lexems = hash_lexem_visualisation[syntax_tree.lex.string + "|" + syntax_tree.lex.position];
-                dom_lexems.table_lex.classList.add("hover_class");
-                dom_lexems.visual_lex.classList.add("hover_class");
-            }
-        })(syntax_tree);
     });
 
     main_div.appendChild(main_header);
