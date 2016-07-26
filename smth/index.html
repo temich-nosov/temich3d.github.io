@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>Hello, world!</title>
+</head>
+<body>
+<canvas width=600 height=600 id="canvas"></canvas>
+<script>
+  var canvas = document.getElementById("canvas");
+  var ctx = canvas.getContext("2d");
+
+  function vecPlus(v1, v2) {
+    return [v1[0] + v2[0], v1[1] + v2[1]];
+  }
+
+  function mulVec(v, val) {
+    return [v[0] * val, v[1] * val];
+  }
+
+  function anglVec(angl) {
+    return [Math.cos(angl), Math.sin(angl)];
+  }
+
+  function drawLine(c1, c2) {
+    ctx.beginPath();
+    ctx.moveTo(c1[0], c1[1]);
+    ctx.lineTo(c2[0], c2[1]);
+    ctx.stroke();
+  }
+
+  // drawLine([10, 10], [200, 200], "#000000");
+
+  var center = [100, 100];
+
+  function genPolygon(center, n, sz, st) {
+    var points = [];
+    var i;
+
+    for (i = 0; i < n; ++i)
+      points[i] = vecPlus(center, mulVec(anglVec(2 * Math.PI * i / n), sz));
+
+    var cur = st;
+    var nxt;
+    for (i = 1; i <= n; ++i) {
+      nxt = i % 2 ? cur + i : cur - i;
+      if (nxt < 0) nxt += n;
+      nxt %= n;
+      drawLine(points[cur], points[nxt]);
+      cur = nxt;
+    }
+  }
+
+  /*
+  var c = [250, 250];
+  var sz = 200;
+  var colors = ["#559", "#595", "#955", "#000", "#ccc"];
+  var n = 10;
+
+  for (var i = 0; 2 * i <= n - 2; ++i) {
+    ctx.strokeStyle = colors[i];
+    ctx.lineWidth = "2";
+    genPolygon(c, n, sz, i);
+  }
+  */
+
+
+  function proof(n, k) {
+    var n2 = n * 4;
+    var fIdx = (n2 - Math.floor(n / 2) + k) % n2;
+    var sIdx = fIdx + n2 / 2;
+
+    var p1 = [50, 300];
+    var p2 = [550, 300];
+
+    var c1 = [300, 150];
+    var c2 = [300, 450];
+    var sz = 95;
+
+    genPolygon(c1, n2, sz, fIdx);
+    genPolygon(c2, n2, sz, fIdx);
+
+    var s1 = vecPlus(c1, mulVec(anglVec(2 * Math.PI * fIdx / n2), sz));
+    var s2 = vecPlus(c2, mulVec(anglVec(2 * Math.PI * fIdx / n2), sz));
+    var s3 = vecPlus(c1, mulVec(anglVec(2 * Math.PI * sIdx / n2), sz));
+    var s4 = vecPlus(c2, mulVec(anglVec(2 * Math.PI * sIdx / n2), sz));
+
+    drawLine(p1, s3);
+    drawLine(p1, s4);
+    drawLine(p2, s1);
+    drawLine(p2, s2);
+  }
+
+  function f() {
+    ctx.clearRect(0, 0, 600, 600);
+    var n = document.getElementById("nin").value;
+    var k = document.getElementById("kin").value;
+    if (k <= 0 || n <= 0)
+      alert("Значения должны быть положительными!");
+    if (k > n)
+      alert("K должно быть меньше, либо равно n");
+    --k;
+    ctx.strokeStyle = "#559";
+    ctx.lineWidth = "2";
+    proof(n, k);
+  }
+</script>
+<br>
+n : <input type="number" id="nin">
+k : <input type="number" id="kin">
+<button onclick="f()">click me</button>
+</body>
+</html>
