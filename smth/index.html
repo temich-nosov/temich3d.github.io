@@ -83,8 +83,8 @@
 
   function f() {
     ctx.clearRect(0, 0, 600, 600);
-    var n = document.getElementById("nin").value;
-    var k = document.getElementById("kin").value;
+    var n = +document.getElementById("nin").value;
+    var k = +document.getElementById("kin").value;
     if (k <= 0 || n <= 0) {
       alert("Значения должны быть положительными!");
     }
