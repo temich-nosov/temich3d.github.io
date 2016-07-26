@@ -82,24 +82,22 @@
   }
 
   function f() {
+    var colors = ["#555", "#559", "#595", "#955", "#995", "#959", "#599", "#999", "#000", "#378"];
     ctx.clearRect(0, 0, 600, 600);
     var n = +document.getElementById("nin").value;
-    var k = +document.getElementById("kin").value;
-    if (k <= 0 || n <= 0) {
+    if (n <= 0) {
       alert("Значения должны быть положительными!");
     }
-    if (k > n) {
-      alert("K должно быть меньше, либо равно n");
+
+    for (var i = 0; i < n; ++i) {
+      ctx.strokeStyle = colors[i % colors.length];
+      ctx.lineWidth = "2";
+      proof(n, i);
     }
-    --k;
-    ctx.strokeStyle = "#559";
-    ctx.lineWidth = "2";
-    proof(n, k);
   }
 </script>
 <br>
 n : <input type="number" id="nin">
-k : <input type="number" id="kin">
 <button onclick="f()">click me</button>
 </body>
 </html>
