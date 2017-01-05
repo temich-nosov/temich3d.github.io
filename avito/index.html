@@ -11,10 +11,6 @@
     #numberRecords {
         font-size: 55px;
     }
-
-    .dc-chart g.row text {
-        fill: black;
-    }
   </style>
   <link rel="stylesheet" href="dc.min.css" />
   <link rel="stylesheet" href="bootstrap/css/bootstrap.css" />
@@ -23,6 +19,10 @@
   <link rel="stylesheet" href="leaflet/leaflet.css" />
   <script src="leaflet/leaflet.js"></script>
   <script src="leaflet/leaflet-heat.js"></script>
+
+  <script src="leaflet/MarkerCluster/leaflet.markercluster.js"></script>
+  <link rel="stylesheet" href="leaflet/MarkerCluster/MarkerCluster.css" />
+  <link rel="stylesheet" href="leaflet/MarkerCluster/MarkerCluster.Default.css" />
 
   <script src="lib/jquery-3.1.1.min.js"></script>
   <script src="lib/crossfilter.min.js"></script>
@@ -137,11 +137,19 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-md-3">
+      <div class="col-md-4">
         <div class="chart-wrapper">
           <div class="chart-title">Число объявлений</div>
           <div class="chart-stage"> 
             <div id="numberRecords"></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="chart-wrapper">
+          <div class="chart-stage"> 
+            <button type="button" class="btn btn-default" id="toggleHeatmap">Отключить heatmap</button>
+            <button type="button" class="btn btn-default" id="toggleMarkers">Отключить маркеры</button>
           </div>
         </div>
       </div>

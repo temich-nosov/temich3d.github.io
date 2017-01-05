@@ -46,6 +46,8 @@ function makeRowChart(ndx, filed, id, colors, width, height) {
   return chart;
 }
 
+var heatmapOn = true;
+var markersOn = true;
 
 function processData(records) {
   records.forEach(function(rec) {
@@ -89,29 +91,68 @@ function processData(records) {
         attribution: mapLink
       }).addTo(map);
 
-    var geoData = [];
-    _.each(allDim.top(Infinity), function (d) {
-      geoData.push([d["lat"], d["lon"], 1]);
-    });
+    if (heatmapOn) {
+      var geoData = [];
+      _.each(allDim.top(Infinity), function (d) {
+        geoData.push([d["lat"], d["lon"], 1]);
+      });
 
-    var heat = L.heatLayer(geoData,{
-      radius: 10,
-      blur: 20, 
-      maxZoom: 1,
-    }).addTo(map);
+      var heat = L.heatLayer(geoData,{
+        radius: 10,
+        blur: 20, 
+        maxZoom: 1,
+      }).addTo(map);
+    }
+
+    if (markersOn) {
+      var markers = L.markerClusterGroup();
+      _.each(allDim.top(Infinity), function (d) {
+        // console.log(d);
+        var title = d.name;
+        var marker = L.marker(new L.LatLng(d.lat, d.lon), { title: title });
+        marker.bindPopup('<a href="' + d.link + '">' + d.name + '</a>');
+        markers.addLayer(marker);
+      });
+
+      map.addLayer(markers);
+    }
+  }
+
+  function redrawMap() {
+    map.eachLayer(function (layer) {
+      map.removeLayer(layer)
+    }); 
+    drawMap();
   }
 
   _.each(dcCharts, function (dcChart) {
-    dcChart.on("filtered", function (chart, filter) {
-      map.eachLayer(function (layer) {
-        map.removeLayer(layer)
-      }); 
-      drawMap();
-    });
+    dcChart.on("filtered", redrawMap);
   });
 
   dc.renderAll();
   drawMap();
+
+  $("#toggleHeatmap").click(function() {
+    heatmapOn = !heatmapOn;
+    if (heatmapOn) {
+      $('#toggleHeatmap').text('Отключить heatmap');
+    } else {
+      $('#toggleHeatmap').text('Включить heatmap');
+    }
+
+    redrawMap();
+  });
+
+  $("#toggleMarkers").click(function() {
+    markersOn = !markersOn;
+    if (markersOn) {
+      $('#toggleMarkers').text('Отключить маркеры');
+    } else {
+      $('#toggleMarkers').text('Включить маркеры');
+    }
+
+    redrawMap();
+  });
 }
 
 $.getJSON("showId.json", processData);
