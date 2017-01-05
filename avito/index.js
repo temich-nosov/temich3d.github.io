@@ -5,15 +5,15 @@ function makeBarChart(ndx, filed, id, interval, width, height) {
   if (!interval)
     interval = [dim.bottom(1)[0][filed], dim.top(1)[0][filed]];
 
-  if (!width) width = 300;
-  if (!height) height = 150;
+  if (!width) width = 360;
+  if (!height) height = 130;
 
   var chart = dc.barChart(id);
 
   chart.width(width);
   chart.height(height);
 
-  chart.margins({ top: 10, right: 20, bottom: 20, left: 40 });
+  chart.margins({ top: 10, right: 5, bottom: 20, left: 40 });
   chart.dimension(dim).group(group);
   chart.x(d3.scale.linear().domain(interval));
   chart.elasticY(true);
@@ -28,7 +28,7 @@ function makeRowChart(ndx, filed, id, colors, width, height) {
   var group = dim.group();
 
   if (!width) width = 200;
-  if (!height) height = 150;
+  if (!height) height = 120;
 
   var chart  = dc.rowChart(id);
 

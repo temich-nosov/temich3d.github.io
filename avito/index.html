@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<html>
 <head>
   <meta charset="utf-8">
   <title>Avito heatmap</title>
@@ -32,10 +33,11 @@
 
 <body>
   <div class="row">
-  <div class="span9">
+  <div class="col-md-8">
+
 
   <div class="row">
-  <div class="col-md-3">
+  <div class="col-md-6">
     <div class="chart-wrapper">
       <div class="chart-title">Цены</div>
       <div class="chart-stage">
@@ -43,7 +45,7 @@
       </div>
     </div>
   </div>
-  <div class="col-md-3">
+  <div class="col-md-6">
     <div class="chart-wrapper">
       <div class="chart-title">Площадь</div>
       <div class="chart-stage"> 
@@ -51,7 +53,11 @@
       </div>
     </div>
   </div>
-  <div class="col-md-3">
+  </div>
+
+
+  <div class="row">
+  <div class="col-md-6">
     <div class="chart-wrapper">
       <div class="chart-title">Число объявлений с телефона</div>
       <div class="chart-stage"> 
@@ -59,10 +65,7 @@
       </div>
     </div>
   </div>
-  </div>
-
-  <div class="row">
-  <div class="col-md-3">
+  <div class="col-md-6">
     <div class="chart-wrapper">
       <div class="chart-title">Этаж</div>
       <div class="chart-stage"> 
@@ -70,7 +73,11 @@
       </div>
     </div>
   </div>
-  <div class="col-md-3">
+  </div>
+
+
+  <div class="row">
+  <div class="col-md-6">
     <div class="chart-wrapper">
       <div class="chart-title">Этажей в доме</div>
       <div class="chart-stage"> 
@@ -78,7 +85,7 @@
       </div>
     </div>
   </div>
-  <div class="col-md-3">
+  <div class="col-md-6">
     <div class="chart-wrapper">
       <div class="chart-title">Комиссия</div>
       <div class="chart-stage"> 
@@ -89,7 +96,7 @@
   </div>
 
   <div class="row">
-  <div class="col-md-3">
+  <div class="col-md-6">
     <div class="chart-wrapper">
       <div class="chart-title">Залог</div>
       <div class="chart-stage"> 
@@ -97,7 +104,7 @@
       </div>
     </div>
   </div>
-  <div class="col-md-2">
+  <div class="col-md-3">
     <div class="chart-wrapper">
       <div class="chart-title">Арендодатель</div>
       <div class="chart-stage"> 
@@ -105,7 +112,7 @@
       </div>
     </div>
   </div>
-  <div class="col-md-2">
+  <div class="col-md-3">
     <div class="chart-wrapper">
       <div class="chart-title">Тип</div>
       <div class="chart-stage"> 
@@ -113,24 +120,28 @@
       </div>
     </div>
   </div>
-  <div class="col-md-1">
-    <div class="chart-wrapper">
-      <div class="chart-title">Число объявлений</div>
-      <div class="chart-stage"> 
-        <div id="numberRecords"></div>
-      </div>
-    </div>
   </div>
-  </div>
+
+
   </div>
   
-  <div class="span3">
+  <div class="col-md-4">
     <div class="row">
-      <div class="col-sm-3"> 
+      <div class="col-md-12"> 
         <div class="chart-wrapper">
           <div class="chart-title">Карта</div>
           <div class="chart-stage">
-            <div id="map" style="width: 350px; height: 300px"></div>
+            <div id="map" style="width: 360px; height: 450px"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-3">
+        <div class="chart-wrapper">
+          <div class="chart-title">Число объявлений</div>
+          <div class="chart-stage"> 
+            <div id="numberRecords"></div>
           </div>
         </div>
       </div>
@@ -142,3 +153,4 @@
   </div>
   <script src="index.js"></script>
 </body>
+</html>
