@@ -3,9 +3,17 @@
   <meta charset="utf-8">
   <title>Avito heatmap</title>
   <style>
-#map {
-  height: 400px;
-}
+    #map {
+      height: 400px;
+    }
+
+    #numberRecords {
+        font-size: 55px;
+    }
+
+    .dc-chart g.row text {
+        fill: black;
+    }
   </style>
   <link rel="stylesheet" href="dc.min.css" />
   <link rel="stylesheet" href="bootstrap/css/bootstrap.css" />
@@ -23,6 +31,10 @@
 </head>
 
 <body>
+  <div class="row">
+  <div class="span9">
+
+  <div class="row">
   <div class="col-md-3">
     <div class="chart-wrapper">
       <div class="chart-title">Цены</div>
@@ -47,11 +59,57 @@
       </div>
     </div>
   </div>
+  </div>
+
+  <div class="row">
+  <div class="col-md-3">
+    <div class="chart-wrapper">
+      <div class="chart-title">Этаж</div>
+      <div class="chart-stage"> 
+        <div id="floorChart"></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="chart-wrapper">
+      <div class="chart-title">Этажей в доме</div>
+      <div class="chart-stage"> 
+        <div id="maxFloorChart"></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="chart-wrapper">
+      <div class="chart-title">Комиссия</div>
+      <div class="chart-stage"> 
+        <div id="commChart"></div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <div class="row">
+  <div class="col-md-3">
+    <div class="chart-wrapper">
+      <div class="chart-title">Залог</div>
+      <div class="chart-stage"> 
+        <div id="deposChart"></div>
+      </div>
+    </div>
+  </div>
   <div class="col-md-2">
     <div class="chart-wrapper">
       <div class="chart-title">Арендодатель</div>
       <div class="chart-stage"> 
         <div id="agency"></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-2">
+    <div class="chart-wrapper">
+      <div class="chart-title">Тип</div>
+      <div class="chart-stage"> 
+        <div id="typeChart"></div>
       </div>
     </div>
   </div>
@@ -63,14 +121,24 @@
       </div>
     </div>
   </div>
-
-  <div class="col-md-12">
-    <div class="chart-wrapper">
-      <div class="chart-title">Карта</div>
-      <div class="chart-stage">
-        <div id="map"></div>
+  </div>
+  </div>
+  
+  <div class="span3">
+    <div class="row">
+      <div class="col-sm-3"> 
+        <div class="chart-wrapper">
+          <div class="chart-title">Карта</div>
+          <div class="chart-stage">
+            <div id="map" style="width: 350px; height: 300px"></div>
+          </div>
+        </div>
       </div>
     </div>
+  </div>
+
+  </div>
+
   </div>
   <script src="index.js"></script>
 </body>

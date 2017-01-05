@@ -1,3 +1,52 @@
+function makeBarChart(ndx, filed, id, interval, width, height) {
+  var dim = ndx.dimension((x) => x[filed]);
+  var group = dim.group();
+
+  if (!interval)
+    interval = [dim.bottom(1)[0][filed], dim.top(1)[0][filed]];
+
+  if (!width) width = 300;
+  if (!height) height = 150;
+
+  var chart = dc.barChart(id);
+
+  chart.width(width);
+  chart.height(height);
+
+  chart.margins({ top: 10, right: 20, bottom: 20, left: 40 });
+  chart.dimension(dim).group(group);
+  chart.x(d3.scale.linear().domain(interval));
+  chart.elasticY(true);
+  chart.yAxis().ticks(4);
+  chart.transitionDuration(500);
+
+  return chart;
+}
+
+function makeRowChart(ndx, filed, id, colors, width, height) {
+  var dim = ndx.dimension((x) => x[filed]);
+  var group = dim.group();
+
+  if (!width) width = 200;
+  if (!height) height = 150;
+
+  var chart  = dc.rowChart(id);
+
+  if (!colors) colors = ['#f77', '#a55'];
+
+  chart.width(width);
+  chart.height(height);
+  chart.margins({ top: 10, right: 50, bottom: 20, left: 40 });
+  chart.dimension(dim).group(group);
+  chart.elasticX(true);
+  chart.xAxis().ticks(4);
+  chart.transitionDuration(500);
+  chart.colors(colors);
+
+  return chart;
+}
+
+
 function processData(records) {
   records.forEach(function(rec) {
     rec.lat = +rec.lat;
@@ -8,81 +57,36 @@ function processData(records) {
 
   var ndx = crossfilter(records);
 
-  var priceDim = ndx.dimension((x) => x.price);
-  var sqDim    = ndx.dimension((x) => x.sq);
-  var phoneDim = ndx.dimension((x) => x.phoneCnt);
-  var agencyDim = ndx.dimension((x) => x.agency);
   var allDim   = ndx.dimension((x) => x);
-
-  var priceGroup = priceDim.group();
-  var sqGroup    = sqDim.group();
-  var phoneGroup = phoneDim.group();
-  var agencyGroup= agencyDim.group();
   var all        = ndx.groupAll();
 
-  var minPrice = priceDim.bottom(1)[0]['price'];
-  var maxPrice = priceDim.top(1)[0]['price'];
-
-  var minSq = sqDim.bottom(1)[0]['sq'];
-  var maxSq = sqDim.top(1)[0]['sq'];
-
-  var minPhone = 1;
-  var maxPhone = phoneDim.top(1)[0]['phoneCnt'];
+  console.log(records[0]);
 
   var numberRecordsND = dc.numberDisplay('#numberRecords');
-  var priceChart      = dc.barChart('#priceChart');
-  var sqChart         = dc.barChart('#sqChart');
-  var phoneChart      = dc.barChart('#numberPhone');
-  var agencyRowChart  = dc.rowChart('#agency')
+  var priceChart      = makeBarChart(ndx, 'price', '#priceChart');
+  var sqChart         = makeBarChart(ndx, 'sq', '#sqChart');
+  var phoneChart      = makeBarChart(ndx, 'phoneCnt', '#numberPhone');
+  var agencyRowChart  = makeRowChart(ndx, 'agency', '#agency');
+  var typeRowChart    = makeRowChart(ndx, 'type', '#typeChart');
+  var floorChart      = makeBarChart(ndx, 'floor', '#floorChart');
+  var maxFloorChart   = makeBarChart(ndx, 'maxFloor', '#maxFloorChart');
+  var commChart       = makeBarChart(ndx, 'comm', '#commChart');
+  var deposChart      = makeBarChart(ndx, 'depos', '#deposChart');
+
+  var dcCharts = [priceChart, sqChart, phoneChart, agencyRowChart,
+                  typeRowChart, floorChart, maxFloorChart, commChart, deposChart];
 
   numberRecordsND
     .formatNumber(d3.format("d"))
     .valueAccessor((x) => x)
     .group(all);
 
-  priceChart.width(400).height(150);
-  priceChart.margins({ top: 10, right: 50, bottom: 20, left: 40 });
-  priceChart.dimension(priceDim).group(priceGroup);
-  priceChart.x(d3.scale.linear().domain([minPrice, maxPrice]));
-  priceChart.elasticY(true);
-  priceChart.yAxis().ticks(4);
-  priceChart.transitionDuration(500);
-
-  sqChart.width(400);
-  sqChart.height(150);
-  sqChart.margins({ top: 10, right: 50, bottom: 20, left: 40 });
-  sqChart.dimension(sqDim);
-  sqChart.group(sqGroup);
-  sqChart.transitionDuration(500);
-  sqChart.x(d3.scale.linear().domain([minSq, maxSq]));
-  sqChart.elasticY(true);
-  sqChart.yAxis().ticks(4);
-
-  phoneChart.width(400);
-  phoneChart.height(150);
-  phoneChart.margins({ top: 10, right: 50, bottom: 20, left: 40 });
-  phoneChart.dimension(phoneDim);
-  phoneChart.group(phoneGroup);
-  phoneChart.transitionDuration(500);
-  phoneChart.x(d3.scale.linear().domain([minPhone, maxPhone]));
-  phoneChart.elasticY(true);
-  phoneChart.yAxis().ticks(4);
-
-  agencyRowChart.width(200);
-  agencyRowChart.height(150);
-  agencyRowChart.dimension(agencyDim);
-  agencyRowChart.group(agencyGroup);
-  agencyRowChart.colors(['#6baed6']);
-  agencyRowChart.elasticX(true);
-  agencyRowChart.xAxis().ticks(4);
-
-
   var map = L.map('map').setView([48.5, 44.5], 9);
   var drawMap = function() {
     var mapLink = '<a href="http://openstreetmap.org">OpenStreetMap</a>';
     L.tileLayer(
       'http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-        attribution: '---'
+        attribution: mapLink
       }).addTo(map);
 
     var geoData = [];
@@ -96,8 +100,6 @@ function processData(records) {
       maxZoom: 1,
     }).addTo(map);
   }
-
-  dcCharts = [priceChart, sqChart, phoneChart];
 
   _.each(dcCharts, function (dcChart) {
     dcChart.on("filtered", function (chart, filter) {
@@ -113,45 +115,3 @@ function processData(records) {
 }
 
 $.getJSON("showId.json", processData);
-
-//q .defer(d3.json, "data.json")
-//  .await(processData);
-
-/*
-   function processData2(data) {
-   var ndx = crossfilter(data);
-
-   var iDim   = ndx.dimension((x) => x['i']);
-   var xDim   = ndx.dimension((x) => x['x']);
-   var allDim = ndx.dimension((x) => x);
-
-   var iGroup = iDim.group();
-   var xGroup = xDim.group();
-   var all    = ndx.groupAll();
-
-  var minI = 0;
-  var maxI = 100;
-
-  var iChart = dc.barChart('#priceChart');
-
-  iChart
-    .width(650)
-    .height(150)
-    .x(d3.scaleLinear().domain([minI, maxI]))
-    .dimension(iDim)
-    .group(iGroup)
-    .yAxis().ticks(4);
-  iChart.render();
-}
-
-var data = [];
-var i = 0;
-for (i = 0; i < 100; ++i) {
-  data.push({
-    'i' : i,
-    'x' : Math.random() > 0.5 ? +1 : 0
-  });
-}
-
-processData2(data);
-*/
