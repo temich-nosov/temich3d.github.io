@@ -50,10 +50,13 @@ var heatmapOn = true;
 var markersOn = true;
 
 function processData(records) {
+  records = _.filter(records, (x) => x.price != 0);
+
   records.forEach(function(rec) {
     rec.lat = +rec.lat;
     rec.lon = +rec.lon;
-    rec.price = +rec.price;
+    rec.price = +rec.price / 1000;
+    rec.sqPrice = +rec.sqPrice / 1000;
     rec.sq = +rec.sq;
   });
 
@@ -72,11 +75,14 @@ function processData(records) {
   var typeRowChart    = makeRowChart(ndx, 'type', '#typeChart');
   var floorChart      = makeBarChart(ndx, 'floor', '#floorChart');
   var maxFloorChart   = makeBarChart(ndx, 'maxFloor', '#maxFloorChart');
+  var sqPriceChart    = makeBarChart(ndx, 'sqPrice', '#sqPriceChart');
+  /*
   var commChart       = makeBarChart(ndx, 'comm', '#commChart');
   var deposChart      = makeBarChart(ndx, 'depos', '#deposChart');
+ */
 
   var dcCharts = [priceChart, sqChart, phoneChart, agencyRowChart,
-                  typeRowChart, floorChart, maxFloorChart, commChart, deposChart];
+    typeRowChart, floorChart, maxFloorChart, sqPriceChart];
 
   numberRecordsND
     .formatNumber(d3.format("d"))
