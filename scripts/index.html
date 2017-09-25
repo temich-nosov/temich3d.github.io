@@ -1,0 +1,24 @@
+<html>
+  <head>
+    <script src="https://www.gstatic.com/firebasejs/4.4.0/firebase.js"></script>
+  </head>
+  <body>
+    <script>
+      function do(apiKey) {
+      // Initialize Firebase
+      var config = {
+          apiKey: apiKey,
+          authDomain: "helloworld-1a19a.firebaseapp.com",
+          databaseURL: "https://helloworld-1a19a.firebaseio.com",
+          projectId: "helloworld-1a19a",
+          storageBucket: "helloworld-1a19a.appspot.com",
+          messagingSenderId: "266410403803"
+        };
+
+        firebase.initializeApp(config);
+        let db = firebase.database();
+        db.ref('/hello-world-data').push([1, 2, 3]);
+      }
+    </script>
+  </body>
+</html>
